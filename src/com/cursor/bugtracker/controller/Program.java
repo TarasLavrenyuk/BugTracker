@@ -1,10 +1,18 @@
 package com.cursor.bugtracker.controller;
 
+import com.cursor.bugtracker.service.TicketService;
+import com.cursor.bugtracker.service.UserService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+// every screen (window, ui block) should be separate function
+
 public class Program {
+
+    private static UserService userService;
+    private static TicketService ticketService;
 
     public static void main(String[] args) throws IOException {
         // login
@@ -14,8 +22,8 @@ public class Program {
 
 
         System.out.println(
-                "1. Show all tickets\n" +
-                        "2. Create new ticket \n" +
+                "1. Sign in\n" +
+                        "2. Sign up\n" +
                         "\n" +
                         "Choose option..."
         );
@@ -29,9 +37,37 @@ public class Program {
         if (name.equals("1")) {
             clearScreen();
             System.out.println("display all tickets");
+
+            showSignInScreen();
         } else if (name.equals("2")) {
             clearScreen();
             System.out.println("create new ticket stuff");
+        }
+    }
+
+    private static void showSignInScreen() throws IOException {
+        System.out.println("Type login: ");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String username = reader.readLine();
+
+        System.out.println("Type password: ");
+        String password = reader.readLine();
+
+        try {
+            userService.login(username, password);
+        } catch (BadCredentialsException exception) {
+            System.out.println(
+                    "Dude, wrong password." +
+                            "1. Try again." +
+                            "2. Exit."
+            );
+
+            String nextStep = reader.readLine();
+            if (nextStep.equals("1")) {
+                showSignInScreen();
+            } else if (nextStep.equals("2")) {
+                return;
+            }
         }
     }
 

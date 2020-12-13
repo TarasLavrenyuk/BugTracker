@@ -4,9 +4,9 @@ import com.cursor.bugtracker.model.Ticket;
 
 public interface TicketDao {
 
-    Ticket save(String tickedId);
+    Ticket save(Ticket ticket);
 
     Ticket getById(String tickedId);
 
-    Ticket removeById(String tickedId);
+    boolean removeById(String tickedId);
 }

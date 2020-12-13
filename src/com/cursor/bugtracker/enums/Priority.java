@@ -1,4 +1,4 @@
-package com.cursor.bugtracker.model;
+package com.cursor.bugtracker.enums;
 
 public enum Priority {
 
