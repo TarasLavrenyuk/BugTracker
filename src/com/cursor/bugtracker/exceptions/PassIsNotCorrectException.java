@@ -1,4 +1,4 @@
-package bugtracker.exceptions;
+package com.cursor.bugtracker.exceptions;
 
 public class PassIsNotCorrectException extends Exception{
     public PassIsNotCorrectException(String description) {

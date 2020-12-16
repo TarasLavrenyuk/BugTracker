@@ -1,8 +1,8 @@
 package com.cursor.bugtracker.service;
 
-import bugtracker.exceptions.NameIsNotCorrectException;
-import bugtracker.exceptions.PassIsNotCorrectException;
-import bugtracker.exceptions.UserNameAlreadyTakenException;
+import com.cursor.bugtracker.exceptions.NameIsNotCorrectException;
+import com.cursor.bugtracker.exceptions.PassIsNotCorrectException;
+import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
 import com.cursor.bugtracker.model.User;
 
 // make it singleton
