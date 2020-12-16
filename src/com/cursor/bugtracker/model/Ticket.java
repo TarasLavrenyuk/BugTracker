@@ -18,7 +18,16 @@ public class Ticket {
     private long estimatedTime;
     private long spentTime;
 
-    public Ticket(String ticketId, String name, String description, List<String> assigneeList, String reporter, Status status, Priority priority, long estimatedTime, long spentTime) {
+    public Ticket(String ticketId,
+                  String name,
+                  String description,
+                  List<String> assigneeList,
+                  String reporter,
+                  Status status,
+                  Priority priority,
+                  long estimatedTime,
+                  long spentTime
+    ) {
         this.ticketId = ticketId;
         this.name = name;
         this.description = description;
@@ -80,10 +89,6 @@ public class Ticket {
 
     public String getReporter() {
         return reporter;
-    }
-
-    public void setReporter(String reporter) {
-        this.reporter = reporter;
     }
 
     public Status getStatus() {
