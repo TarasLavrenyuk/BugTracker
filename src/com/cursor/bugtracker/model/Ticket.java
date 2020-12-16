@@ -39,28 +39,8 @@ public class Ticket {
         this.spentTime = spentTime; // time in seconds
     }
 
-    public Ticket(String name, String description, List<String> assigneeList, String reporter, Status status, Priority priority, long estimatedTime, long spentTime) {
-        this.name = name;
-        this.description = description;
-        this.assigneeList = assigneeList;
-        this.reporter = reporter;
-        this.status = status;
-        this.priority = priority;
-        this.estimatedTime = estimatedTime;
-        this.spentTime = spentTime;
-    }
-
-    public Ticket(String name) {
-        this.ticketId = UUID.randomUUID().toString();
-        this.name = name;
-    }
-
     public String getTicketId() {
         return ticketId;
-    }
-
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
     }
 
     public String getName() {
