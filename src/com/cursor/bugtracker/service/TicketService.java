@@ -1,5 +1,6 @@
 package com.cursor.bugtracker.service;
 
+import com.cursor.bugtracker.dao.TicketDao;
 import com.cursor.bugtracker.dao.TicketInMemoryDao;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
@@ -13,8 +14,8 @@ import java.util.UUID;
 public class TicketService {
 
     private static TicketService instance;
-    private final TicketInMemoryDao ticketDao = TicketInMemoryDao.getInstance();
-    private final UserService userService = UserService.getInstance();
+    private final TicketDao ticketDao = TicketInMemoryDao.getInstance();
+    private final UserDao userDao = UserInMemoryDao.getInstance();
 
     private TicketService() { }
 
@@ -25,26 +26,25 @@ public class TicketService {
     }
 
     public Ticket create(
-            String name,
-            String description,
-            List<String> assigneeList,
-            String reporter,
-            Status status,
-            Priority priority,
-            long estimatedTime
+            final String name,
+            final String description,
+            final List<String> assigneeList,
+            final String reporter,
+            final Status status,
+            final Priority priority,
+            final long estimatedTime
     ) throws InvalidTicketNameException,
-             InvalidEstimatedTimeException {
-
+            InvalidEstimatedTimeException,
+            UserNotFoundException {
         final String ticketId = generateId();
 
-        final String validatedName = correctName(name);
+        final String validatedName = changeName(name);
         validateName(validatedName);
 
         validateAssigneeList(assigneeList);
-        validateUser(reporter);
         validateTime(estimatedTime);
 
-        Ticket ticket = new Ticket(
+        final Ticket ticket = new Ticket(
                 ticketId,
                 validatedName,
                 description,
@@ -56,32 +56,22 @@ public class TicketService {
                 0L
         );
 
-        ticket = ticketDao.save(ticket);
-
-        return ticket;
-    }
-
-    public void test(String name) throws InvalidTicketNameException {
-        name = correctName(name);
-        validateName(name);
+        return ticketDao.save(ticket);
     }
 
     private String generateId(){
         return UUID.randomUUID().toString();
     }
 
-    private String correctName(String name){
-        name = name.trim();
-
-        return name;
+    private String changeName(final String name){
+        final String changedName = name.trim();
+        return changedName;
     }
 
-    private void validateName(String name) throws InvalidTicketNameException {
-
+    private void validateName(final String name) throws InvalidTicketNameException {
         if(name.length() < 5){
             throw new InvalidTicketNameException("The name of the ticket is too short.");
-        }
-        else if(name.length() > 101){
+        } else if(name.length() > 101){
             throw new InvalidTicketNameException("The name of the ticket is too long.");
         }
 
@@ -116,88 +106,72 @@ public class TicketService {
         }
     }
 
-    private void validateAssigneeList(List<String> assigneeList) {
+    private void validateAssigneeList(final List<String> assigneeList) throws UserNotFoundException {
         for(String userId : assigneeList){
-            validateUser(userId);
+            if(!checkIfExistUser(userId)){
+                throw new UserNotFoundException("User with id \"" + userId + "\" not found.");
+            }
         }
     }
 
-    private void validateUser(String userId){
-        User user = userService.getById(userId);
+    private boolean checkIfExistUser(final String userId) {
+        User user = userDao.getById(userId);
+        return user != null;
     }
 
-    private void validateTime(long estimatedTime) throws InvalidEstimatedTimeException {
+    private void validateTime(final long estimatedTime) throws InvalidEstimatedTimeException {
         if(estimatedTime < 60)
             throw new InvalidEstimatedTimeException("Estimated time \"" + estimatedTime + "\" of the ticket was entered incorrectly.");
     }
 
-    public Ticket findById(String ticketId) throws TicketNotFoundException {
+    public Ticket findById(final String ticketId) throws TicketNotFoundException {
         Ticket ticket = ticketDao.getById(ticketId);
         if(ticket == null)
             throw new TicketNotFoundException(ticketId);
         return ticket;
     }
 
-    public void delete(String ticketId) throws TicketNotFoundException {
-        Ticket ticket = findById(ticketId);
-        if(ticket == null){
+    public void delete(final String ticketId) throws TicketNotFoundException {
+        if(!ticketDao.removeById(ticketId)){
             throw new TicketNotFoundException("The ticket with id \"" + ticketId + "\" was not found.");
         }
-        ticketDao.removeById(ticketId);
     }
 
     public Ticket edit(
-            String userId,
-            String ticketId,
-            String name,
-            String description,
-            List<String> assigneeList,
-            Status status,
-            Priority priority,
-            long spentTime
+            final String ticketId,
+            final String name,
+            final String description,
+            final List<String> assigneeList,
+            final Status status,
+            final Priority priority
     ) throws InvalidTicketNameException,
-            InvalidEstimatedTimeException,
             TicketNotFoundException,
-            NoAccessToEditException {
+            UserNotFoundException {
+        Ticket ticket = findById(ticketId);
 
-        validateUser(userId);
+        if(name != null){
+            final String validatedName = changeName(name);
+            validateName(validatedName);
+            ticket.setName(validatedName);
+        }
 
-        Ticket ticket = getInstance().findById(ticketId);
+        if(description != null){
+            ticket.setDescription(description);
+        }
 
-        validateRights(userId, ticket);
+        if(assigneeList != null){
+            validateAssigneeList(assigneeList);
+            ticket.setAssigneeList(assigneeList);
+        }
 
-        final String validatedName = correctName(name);
-        validateName(validatedName);
+        if(status != null){
+            ticket.setStatus(status);
+        }
 
-        validateAssigneeList(assigneeList);
-        validateTime(spentTime);
-
-        ticket.setName(validatedName);
-        ticket.setDescription(description);
-        ticket.setAssigneeList(assigneeList);
-        ticket.setStatus(status);
-        ticket.setPriority(priority);
+        if(priority != null){
+            ticket.setPriority(priority);
+        }
 
         return ticket;
-    }
-
-    private void validateRights(String userId, Ticket ticket) throws NoAccessToEditException {
-        String reporterId = ticket.getReporter();
-        List<String> fullAssigneeList = ticket.getAssigneeList();
-
-        fullAssigneeList.add(reporterId);
-
-        boolean hasRights = false;
-
-        for (String user : fullAssigneeList){
-            if(user.equals(userId)){
-                hasRights = true;
-                break;
-            }
-        }
-
-        if(!hasRights){
-            throw new NoAccessToEditException("You don't have permission to edit this ticket.");
-        }
     }
 }
