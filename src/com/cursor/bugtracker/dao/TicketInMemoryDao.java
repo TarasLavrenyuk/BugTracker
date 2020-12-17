@@ -2,12 +2,20 @@ package com.cursor.bugtracker.dao;
 
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
+import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.Ticket;
+import com.cursor.bugtracker.service.TicketService;
 
 import java.util.*;
 
-// make it singleton !!!
-public class TicketInMemoryDao implements TicketDao {
+public class TicketInMemoryDao implements TicketDao, Singleton {
+    private static TicketInMemoryDao instance;
+
+    public static TicketInMemoryDao getInstance() {
+        if(instance == null)
+            instance = new TicketInMemoryDao();
+        return instance;
+    }
 
     private Map<String, Ticket> tickets = new HashMap<>();
 

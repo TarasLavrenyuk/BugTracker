@@ -5,13 +5,14 @@ import com.cursor.bugtracker.dao.TicketInMemoryDao;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
 import com.cursor.bugtracker.exceptions.*;
+import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.model.User;
 
 import java.util.List;
 import java.util.UUID;
 
-public class TicketService {
+public class TicketService implements Singleton {
 
     private static TicketService instance;
     private final TicketDao ticketDao = TicketInMemoryDao.getInstance();

@@ -1,12 +1,19 @@
 package com.cursor.bugtracker.dao;
 
+import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.model.User;
 
 import java.util.*;
 
-// make it singleton !!!
-public class UserInMemoryDao implements UserDao {
+public class UserInMemoryDao implements UserDao, Singleton {
+    private static UserInMemoryDao instance;
+
+    public static UserInMemoryDao getInstance(){
+        if(instance == null)
+            instance = new UserInMemoryDao();
+        return instance;
+    }
 
     private Map<String, User> users = new HashMap<>();
 
