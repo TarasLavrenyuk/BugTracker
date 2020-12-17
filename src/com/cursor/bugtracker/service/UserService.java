@@ -1,11 +1,10 @@
 package com.cursor.bugtracker.service;
 
-import com.cursor.bugtracker.exceptions.UnacceptableUsernameException;
-import com.cursor.bugtracker.exceptions.UnacceptablePasswordException;
-import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
+import com.cursor.bugtracker.exceptions.*;
+import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
-public class UserService {
+public class UserService implements Singleton {
 
     private static UserService instance;
 
