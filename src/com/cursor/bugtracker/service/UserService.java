@@ -3,10 +3,10 @@ package com.cursor.bugtracker.service;
 import com.cursor.bugtracker.exceptions.NameIsNotCorrectException;
 import com.cursor.bugtracker.exceptions.PassIsNotCorrectException;
 import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
+import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
-// make it singleton
-public class UserService {
+public class UserService implements Singleton {
 
     private static UserService instance;
 
