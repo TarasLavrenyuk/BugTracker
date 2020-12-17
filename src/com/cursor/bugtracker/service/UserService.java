@@ -1,12 +1,11 @@
 package com.cursor.bugtracker.service;
 
-import com.cursor.bugtracker.exceptions.NameIsNotCorrectException;
-import com.cursor.bugtracker.exceptions.PassIsNotCorrectException;
+import com.cursor.bugtracker.exceptions.UnacceptableUsernameException;
+import com.cursor.bugtracker.exceptions.UnacceptablePasswordException;
 import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
-import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
-public class UserService implements Singleton {
+public class UserService {
 
     private static UserService instance;
 
@@ -21,14 +20,14 @@ public class UserService implements Singleton {
     }
 
     public User createUser(String username, String password) throws UserNameAlreadyTakenException,
-            NameIsNotCorrectException, PassIsNotCorrectException {
+            UnacceptableUsernameException, UnacceptablePasswordException {
         // validate inputs
-        username = validateOfString(username);
-        password = validateOfPassString(password);
+        String validatedUsername = validateOfUsernameString(username);
+        String validatedPassword = validateOfPasswordString(password);
 
         // check if username is available
-        checkInputUserName(username);
-        checkInputPass(password);
+        checkUsername(validatedUsername);
+        checkPassword(validatedPassword);
 
         final User newUser = new User(username, password);
 
@@ -49,52 +48,55 @@ public class UserService implements Singleton {
         return user;
     }
 
-    public void checkInputUserName(String name) throws NameIsNotCorrectException {
+    public String validateOfUsernameString(final String username) throws UnacceptableUsernameException {
+        String validatedUsername = username.trim();
+        if (validatedUsername.length() < 6) {
+            throw new UnacceptableUsernameException("Length of name must be not less then six elements.");
+        }
+        return validatedUsername;
+    }
+
+    // this method checks the number of letters and the absence of invalid characters
+    public void checkUsername(String username) throws UnacceptableUsernameException {
         int countOfLetters = 0;
-        char[] res = name.toCharArray();
+        String[] res = username.split("");
         for (int i = 0; i < res.length; i++) {
-            if (Character.isLetter(res[i])) {
+            if ("[!@#$%^&*()+=';:?><,|№/ ]".contains(res[i])) {
+                throw new UnacceptableUsernameException("Username unacceptable." +
+                        " You can use only letters, digits and elements: ._-"
+                        + System.lineSeparator() + "Please repeat one more");
+            }
+            char c = res[i].charAt(0);
+            if (Character.isLetter(c)) {
                 countOfLetters++;
             }
         }
         if (countOfLetters < 1) {
-            throw new NameIsNotCorrectException("Name must be have not less then one letter");
+            throw new UnacceptableUsernameException("Name must be have not less then one letter");
         }
     }
 
-    public String validateOfString(String word) throws NameIsNotCorrectException {
-        word = word.trim().replaceAll("[!@#$%^&*()+=';:?><,|№/ ]", "");
-        if (word.length() < 6) {
-            throw new NameIsNotCorrectException("Length of name must be not less then six elements." +
-                    " You can use only letters, digits and elements: ._-"
-                    + System.lineSeparator() + "Please repeat one more");
+
+    public String validateOfPasswordString(final String password) throws UnacceptablePasswordException {
+        String validatedPassword = password.trim();
+        if (validatedPassword.length() < 8) {
+            throw new UnacceptablePasswordException("Your password must be not less then eight elements");
         }
-        return word;
+        return password;
     }
 
-    public String validateOfPassString(String pass) throws PassIsNotCorrectException {
-        pass = pass.trim().replaceAll(" ", "");
-        if (pass.length() < 8) {
-            throw new PassIsNotCorrectException("Your password must be not less then eight elements");
-        }
-        return pass;
-    }
-
-    public void checkInputPass(String pass) throws PassIsNotCorrectException {
+    // this method checks that the password is more than two digits
+    public void checkPassword(String password) throws UnacceptablePasswordException {
         int countOfDigit = 0;
-        String[] arrOfPass = pass.split("");
-        for (int i = 0; i < arrOfPass.length; i++) {
-            if ("!@#$%^&*()=+]{}[';:?/|',".contains(arrOfPass[i])) {
-                throw new PassIsNotCorrectException("Password is not correct. " +
-                        "You can use only letters, digits and elements: .-_");
-            }
-            char c = arrOfPass[i].charAt(0);
+        String[] arrOfPassword = password.split("");
+        for (int i = 0; i < arrOfPassword.length; i++) {
+            char c = arrOfPassword[i].charAt(0);
             if (Character.isDigit(c)) {
                 countOfDigit++;
             }
         }
         if (countOfDigit < 3) {
-            throw new PassIsNotCorrectException("Password is not correct. " +
+            throw new UnacceptablePasswordException("Password is not correct. " +
                     "You must use not less then three digits");
         }
     }
