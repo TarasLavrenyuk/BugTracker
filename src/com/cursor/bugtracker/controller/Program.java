@@ -20,7 +20,6 @@ public class Program {
         // show all tickets
         // remove ticket
 
-
         System.out.println(
                 "1. Sign in\n" +
                         "2. Sign up\n" +
