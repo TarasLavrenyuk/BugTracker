@@ -1,5 +1,7 @@
 package com.cursor.bugtracker.controller;
 
+import com.cursor.bugtracker.exceptions.BadCredentialsException;
+import com.cursor.bugtracker.model.User;
 import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
 
@@ -11,40 +13,43 @@ import java.io.InputStreamReader;
 
 public class Program {
 
-    private static UserService userService;
-    private static TicketService ticketService;
+    private static User currentUser = null;
+
+    private static UserService userService = UserService.getInstance();
+    private static TicketService ticketService = TicketService.getInstance();
 
     public static void main(String[] args) throws IOException {
-        // login
+        showLoginScreen();
+    }
 
-        // show all tickets
-        // remove ticket
-
-        System.out.println(
-                "1. Sign in\n" +
-                        "2. Sign up\n" +
-                        "\n" +
-                        "Choose option..."
+    private static void showLoginScreen() {
+        DisplayUtils.clearScreen();
+        System.out.println("1. Sign in" +
+                System.lineSeparator() +
+                "2. Sign up" +
+                System.lineSeparator() +
+                "Choose option..."
         );
-
-        BufferedReader reader =
-                new BufferedReader(new InputStreamReader(System.in));
-
-        // Reading data using readLine
-        String name = reader.readLine();
-
-        if (name.equals("1")) {
-            clearScreen();
-            System.out.println("display all tickets");
-
-            showSignInScreen();
-        } else if (name.equals("2")) {
-            clearScreen();
-            System.out.println("create new ticket stuff");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            String option = reader.readLine();
+            if (option.equals("1")) {
+                showSignInScreen();
+            } else if (option.equals("2")) {
+                showSignUpScreen();
+            }
+        } catch (IOException e) {
+            showLoginScreen();
         }
     }
 
+    private static void showSignUpScreen() {
+        DisplayUtils.clearScreen();
+        System.out.println("Sign up, dude");
+    }
+
     private static void showSignInScreen() throws IOException {
+        DisplayUtils.clearScreen();
         System.out.println("Type login: ");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String username = reader.readLine();
@@ -53,25 +58,14 @@ public class Program {
         String password = reader.readLine();
 
         try {
-            userService.login(username, password);
-        } catch (BadCredentialsException exception) {
-            System.out.println(
-                    "Dude, wrong password." +
-                            "1. Try again." +
-                            "2. Exit."
-            );
-
-            String nextStep = reader.readLine();
-            if (nextStep.equals("1")) {
-                showSignInScreen();
-            } else if (nextStep.equals("2")) {
-                return;
-            }
+            currentUser = userService.login(username, password);
+        } catch (BadCredentialsException e) {
+            System.out.println("Your username or login is incorrect.");
         }
     }
 
-    public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    private static void logOut() {
+        System.out.println("Good bye, dude");
+        currentUser = null;
     }
 }
