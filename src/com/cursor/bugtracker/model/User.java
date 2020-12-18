@@ -5,18 +5,18 @@ import java.util.UUID;
 public class User {
 
     private String userId;
-    private String name;
+    private String username;
     private String password;
 
-    public User(String userId, String name, String password) {
+    public User(String userId, String username, String password) {
         this.userId = userId;
-        this.name = name;
+        this.username = username;
         this.password = password;
     }
 
-    public User(String name, String password) {
+    public User(String username, String password) {
         this.userId = UUID.randomUUID().toString();
-        this.name = name;
+        this.username = username;
         this.password = password;
     }
 
@@ -28,12 +28,12 @@ public class User {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

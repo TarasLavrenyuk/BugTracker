@@ -2,30 +2,17 @@ package com.cursor.bugtracker.dao;
 
 import com.cursor.bugtracker.model.User;
 
-import java.util.Map;
+import java.util.List;
 
 public interface UserDao {
 
-    public Map<String, User> getAllUsers();
+    List<User> getAllUsers();
 
+    User save(User user);
 
-    public User save(User userId);
+    User getUserById(String userId);
 
-    User getUserId(String userId);
+    User deleteUserById(String userId);
 
-    User deleteUserId(String userId);
-
-    User saveName(User username);
-
-    User getName(String username);
-
-    User deletedName(String username);
-
-    User savePassword(User password);
-
-    User getPassword(int password);
-
-    User deletedPassword(int password);
-
-
+    User getUserByUsername(String username);
 }

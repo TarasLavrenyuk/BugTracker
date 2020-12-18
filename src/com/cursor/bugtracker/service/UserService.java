@@ -1,5 +1,6 @@
 package com.cursor.bugtracker.service;
 
+import com.cursor.bugtracker.dao.UserDao;
 import com.cursor.bugtracker.dao.UserInMemoryDao;
 import com.cursor.bugtracker.exceptions.*;
 import com.cursor.bugtracker.interfaces.Singleton;
@@ -24,11 +25,13 @@ public class UserService implements Singleton {
         return instance;
     }
 
-    public User createUser(String username, String password) throws UserNameAlreadyTakenException,
+    public User createUser(final String username, final String password) throws UserNameAlreadyTakenException,
             UnacceptableUsernameException, UnacceptablePasswordException {
         String validatedUsername = username.trim();
         validateUsername(validatedUsername);
-        // TODO: check if username is available
+        if (userDao.getUserByUsername(validatedUsername) != null) {
+            throw new UserNameAlreadyTakenException("Username \"" + username + "\" is already taken.");
+        }
         return userDao.save(new User(username, password));
     }
 
