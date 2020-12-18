@@ -1,15 +1,21 @@
 package com.cursor.bugtracker.service;
 
+import com.cursor.bugtracker.dao.UserInMemoryDao;
 import com.cursor.bugtracker.exceptions.*;
 import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
+import java.util.regex.Pattern;
+
 public class UserService implements Singleton {
+
+    private UserDao userDao = UserInMemoryDao.getInstance();
+
 
     private static UserService instance;
 
     private UserService() {
-    };
+    }
 
     public static UserService getInstance() {
         if (instance == null) {
@@ -20,19 +26,10 @@ public class UserService implements Singleton {
 
     public User createUser(String username, String password) throws UserNameAlreadyTakenException,
             UnacceptableUsernameException, UnacceptablePasswordException {
-        // validate inputs
-        String validatedUsername = validateOfUsernameString(username);
-        String validatedPassword = validateOfPasswordString(password);
-
-        // check if username is available
-        checkUsername(validatedUsername);
-        checkPassword(validatedPassword);
-
-        final User newUser = new User(username, password);
-
-        userDao.save(newUser);
-
-        return newUser;
+        String validatedUsername = username.trim();
+        validateUsername(validatedUsername);
+        // TODO: check if username is available
+        return userDao.save(new User(username, password));
     }
 
     public User login(String username, String password) {
@@ -47,36 +44,20 @@ public class UserService implements Singleton {
         return user;
     }
 
-    public String validateOfUsernameString(final String username) throws UnacceptableUsernameException {
-        String validatedUsername = username.trim();
-        if (validatedUsername.length() < 6) {
-            throw new UnacceptableUsernameException("Length of name must be not less then six elements.");
+    public void validateUsername(final String username) throws UnacceptableUsernameException {
+        Pattern pattern = Pattern.compile("[!@#$%^&*()+=';:?><,|№/ ]");
+        if (pattern.matcher(username).find()) {
+            throw new UnacceptableUsernameException("Username unacceptable." +
+                    " You can use only letters, digits and elements: ._-");
         }
-        return validatedUsername;
-    }
 
-    // this method checks the number of letters and the absence of invalid characters
-    public void checkUsername(String username) throws UnacceptableUsernameException {
-        int countOfLetters = 0;
-        String[] res = username.split("");
-        for (int i = 0; i < res.length; i++) {
-            if ("[!@#$%^&*()+=';:?><,|№/ ]".contains(res[i])) {
-                throw new UnacceptableUsernameException("Username unacceptable." +
-                        " You can use only letters, digits and elements: ._-"
-                        + System.lineSeparator() + "Please repeat one more");
-            }
-            char c = res[i].charAt(0);
-            if (Character.isLetter(c)) {
-                countOfLetters++;
-            }
-        }
-        if (countOfLetters < 1) {
-            throw new UnacceptableUsernameException("Name must be have not less then one letter");
-        }
+        // username must start with letter (regex)
+        // https://ru.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5_%D0%B2%D1%8B%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F
     }
 
 
-    public String validateOfPasswordString(final String password) throws UnacceptablePasswordException {
+    // TODO: move to FE
+    public String validatePasswordString(final String password) throws UnacceptablePasswordException {
         String validatedPassword = password.trim();
         if (validatedPassword.length() < 8) {
             throw new UnacceptablePasswordException("Your password must be not less then eight elements");
@@ -84,15 +65,15 @@ public class UserService implements Singleton {
         return password;
     }
 
-    // this method checks that the password is more than two digits
-    public void checkPassword(String password) throws UnacceptablePasswordException {
+
+    // TODO: move to FE
+    /**
+     * Checks if password has at least 3 symbols
+     */
+    public void checkPassword(final String password) throws UnacceptablePasswordException {
         int countOfDigit = 0;
-        String[] arrOfPassword = password.split("");
-        for (int i = 0; i < arrOfPassword.length; i++) {
-            char c = arrOfPassword[i].charAt(0);
-            if (Character.isDigit(c)) {
-                countOfDigit++;
-            }
+        for (char c : password.toCharArray()) {
+            if (Character.isDigit(c)) countOfDigit++;
         }
         if (countOfDigit < 3) {
             throw new UnacceptablePasswordException("Password is not correct. " +
