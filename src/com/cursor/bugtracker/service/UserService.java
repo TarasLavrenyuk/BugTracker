@@ -26,7 +26,7 @@ public class UserService implements Singleton {
     }
 
     public User createUser(final String username, final String password) throws UserNameAlreadyTakenException,
-            UnacceptableUsernameException, UnacceptablePasswordException {
+            UnacceptableUsernameException {
         String validatedUsername = username.trim();
         validateUsername(validatedUsername);
         if (userDao.getUserByUsername(validatedUsername) != null) {
@@ -35,16 +35,20 @@ public class UserService implements Singleton {
         return userDao.save(new User(username, password));
     }
 
-    public User login(String username, String password) {
+    public User login(String username, String password) throws BadCredentialsException {
         // validate username
+        String validateUsername = username.trim();
 
         // dao.getUserByUsername(username)
-
         // if null throw BadCredentialsException
-
+        if (userDao.getUserByUsername(validateUsername) == null) {
+            throw new BadCredentialsException("Username " + validateUsername + " does not exist");
+        }
         // if user.password != password throw BadCredentialsException
-
-        return user;
+        if (!password.equals(userDao.getUserByUsername(validateUsername).getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+        return userDao.getUserByUsername(validateUsername);
     }
 
     public void validateUsername(final String username) throws UnacceptableUsernameException {
@@ -53,9 +57,9 @@ public class UserService implements Singleton {
             throw new UnacceptableUsernameException("Username unacceptable." +
                     " You can use only letters, digits and elements: ._-");
         }
-
-        // username must start with letter (regex)
-        // https://ru.wikipedia.org/wiki/%D0%A0%D0%B5%D0%B3%D1%83%D0%BB%D1%8F%D1%80%D0%BD%D1%8B%D0%B5_%D0%B2%D1%8B%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F
+        if (!username.startsWith("[a-z]")) {
+            throw new UnacceptableUsernameException("Username must starts with letter.");
+        }
     }
 
 
@@ -70,6 +74,7 @@ public class UserService implements Singleton {
 
 
     // TODO: move to FE
+
     /**
      * Checks if password has at least 3 symbols
      */
