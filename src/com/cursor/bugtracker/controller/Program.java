@@ -1,5 +1,6 @@
 package com.cursor.bugtracker.controller;
 
+import com.cursor.bugtracker.exceptions.BadCredentialsException;
 import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
 
@@ -11,8 +12,8 @@ import java.io.InputStreamReader;
 
 public class Program {
 
-    private static UserService userService;
-    private static TicketService ticketService;
+    private static UserService userService ;//= UserService.getInstance();
+    private static TicketService ticketService ;//= TicketService.getInstance();
 
     public static void main(String[] args) throws IOException {
         // login
@@ -36,7 +37,6 @@ public class Program {
         if (name.equals("1")) {
             clearScreen();
             System.out.println("display all tickets");
-
             showSignInScreen();
         } else if (name.equals("2")) {
             clearScreen();
@@ -52,26 +52,12 @@ public class Program {
         System.out.println("Type password: ");
         String password = reader.readLine();
 
-        try {
-            userService.login(username, password);
-        } catch (BadCredentialsException exception) {
-            System.out.println(
-                    "Dude, wrong password." +
-                            "1. Try again." +
-                            "2. Exit."
-            );
-
-            String nextStep = reader.readLine();
-            if (nextStep.equals("1")) {
-                showSignInScreen();
-            } else if (nextStep.equals("2")) {
-                return;
-            }
-        }
+        userService.login(username, password);
     }
 
     public static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
+
 }
