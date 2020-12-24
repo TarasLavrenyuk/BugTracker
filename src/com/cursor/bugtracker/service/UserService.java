@@ -12,7 +12,6 @@ public class UserService implements Singleton {
 
     private UserDao userDao = UserInMemoryDao.getInstance();
 
-
     private static UserService instance;
 
     private UserService() {
@@ -39,12 +38,9 @@ public class UserService implements Singleton {
         // validate username
         String validateUsername = username.trim();
 
-        // dao.getUserByUsername(username)
-        // if null throw BadCredentialsException
         if (userDao.getUserByUsername(validateUsername) == null) {
             throw new BadCredentialsException("Username " + validateUsername + " does not exist");
         }
-        // if user.password != password throw BadCredentialsException
         if (!password.equals(userDao.getUserByUsername(validateUsername).getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
@@ -58,7 +54,7 @@ public class UserService implements Singleton {
                     " You can use only letters, digits and elements: ._-");
         }
         if (!username.startsWith("[a-z]")) {
-            throw new UnacceptableUsernameException("Username must starts with letter.");
+            throw new UnacceptableUsernameException("Username must start with letter a small letter.");
         }
     }
 
@@ -88,5 +84,4 @@ public class UserService implements Singleton {
                     "You must use not less then three digits");
         }
     }
-
 }
