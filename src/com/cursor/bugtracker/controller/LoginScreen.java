@@ -11,7 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Program {
+public class LoginScreen {
 
     private static User currentUser = null;
 
