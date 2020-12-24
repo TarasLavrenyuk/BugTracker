@@ -1,12 +1,12 @@
 package com.cursor.bugtracker.dao;
 
 import com.cursor.bugtracker.interfaces.Singleton;
-import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.model.User;
 
 import java.util.*;
 
 public class UserInMemoryDao implements UserDao, Singleton {
+
     private static UserInMemoryDao instance;
 
     public static UserInMemoryDao getInstance(){
@@ -29,19 +29,34 @@ public class UserInMemoryDao implements UserDao, Singleton {
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return null;
+    }
+
+    @Override
     public User save(User user) {
         users.put(user.getUserId(), user);
         return user;
     }
 
     @Override
-    public User getById(String ticketId) {
-        return tickets.get(ticketId);
+    public User getUserById(String userId) {
+        return users.get(userId);
     }
 
     @Override
-    public boolean removeById(String ticketId) {
+    public User deleteUserById(String userId) {
+        return users.remove(userId);
+    }
 
+    @Override
+    public User getUserByUsername(String username) {
+        for (User user : getAllUsers()) {
+            if (user.getName().equals(username)) {
+                return user;
+            }
+        }
+        return null;
     }
 
     public List<User> findByName(String query) {

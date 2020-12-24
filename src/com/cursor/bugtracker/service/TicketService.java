@@ -118,7 +118,7 @@ public class TicketService implements Singleton {
     }
 
     private boolean checkIfExistUser(final String userId) {
-        User user = userDao.getById(userId);
+        User user = userDao.getUserById(userId);
         return user != null;
     }
 
