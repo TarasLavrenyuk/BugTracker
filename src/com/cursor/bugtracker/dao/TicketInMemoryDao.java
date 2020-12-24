@@ -7,12 +7,13 @@ import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.service.TicketService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TicketInMemoryDao implements TicketDao, Singleton {
     private static TicketInMemoryDao instance;
 
     public static TicketInMemoryDao getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new TicketInMemoryDao();
         return instance;
     }
@@ -31,7 +32,7 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 Priority.MEDIUM,
                 18000, // 5 hours
                 5000
-                );
+        );
 
         tickets.put(id1, ticket1);
     }
@@ -49,7 +50,11 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
 
     @Override
     public boolean removeById(String ticketId) {
+        return tickets.remove(ticketId) != null;
+    }
 
+    public List<Ticket> getAllTickets() {
+        return new ArrayList<>(tickets.values());
     }
 
     public List<Ticket> findByName(String query) {
