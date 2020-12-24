@@ -1,13 +1,11 @@
 package com.cursor.bugtracker.controller;
 
 import com.cursor.bugtracker.exceptions.BadCredentialsException;
+import com.cursor.bugtracker.exceptions.UnacceptableUsernameException;
+import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
 import com.cursor.bugtracker.model.User;
 import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,76 +19,91 @@ public class Program {
     private static TicketService ticketService = TicketService.getInstance();
 
     public static void main(String[] args) throws IOException {
-        showLoginScreen();
+        showWelcomeScreen();
     }
 
-    private static void showLoginScreen() {
+    private static void showWelcomeScreen() {
+        showWelcomeScreen("");
+    }
+
+    private static void showWelcomeScreen(final String message) {
         DisplayUtils.clearScreen();
+        DisplayUtils.showUserMessage(message);
         System.out.println("1. Sign in" +
                 System.lineSeparator() +
                 "2. Sign up" +
                 System.lineSeparator() +
                 "Choose option..."
-
         );
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            try {
-                String option = reader.readLine();
-                if (option.equals("1")) {
-                    showSignInScreen();
-                } else if (option.equals("2")) {
-                    showSignUpScreen();
-                }
-            } catch (IOException e) {
-                showLoginScreen();
+            String option = reader.readLine();
+            if (option.equals("1")) {
+                showSignInScreen();
+            } else if (option.equals("2")) {
+                showSignUpScreen();
             }
+            // TODO: else ... process unexpected input {sout(WRONG INPUT); showLoginScreen()}
         } catch (IOException e) {
-            e.printStackTrace();
+            showWelcomeScreen();
         }
     }
 
     private static void showSignInScreen() throws IOException {
+        showSignInScreen("");
+    }
+
+    private static void showSignInScreen(final String message) throws IOException {
         DisplayUtils.clearScreen();
+        DisplayUtils.showUserMessage(message);
+        System.out.println("Press esc to go back to welcome screen.");
         System.out.println("Type login: ");
+
+        // check if user clicked esc
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String username = reader.readLine();
 
         System.out.println("Type password: ");
         String password = reader.readLine();
 
-
-        userService.login(username, password);
-        try {login
+        try {
             currentUser = userService.login(username, password);
             System.out.println("Your initialization is successful");
+            // TODO: open next screen
         } catch (BadCredentialsException e) {
-            System.out.println("\nYour username or login is incorrect.\nPlease try again.\n");
-            showSignInScreen();
+            showSignInScreen("Your username or login is incorrect.\nPlease try again.");
         }
     }
 
-
     private static void showSignUpScreen() throws IOException {
+        showSignUpScreen("");
+    }
+
+    private static void showSignUpScreen(final String message) throws IOException {
         DisplayUtils.clearScreen();
-        System.out.println("Create your Login: ");
+        DisplayUtils.showUserMessage(message);
+        System.out.println("Press esc to go back to welcome screen.");
+        System.out.println("Create your login: ");
+        // check if user clicked esc
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        // or here check if user clicked esc
         String username = reader.readLine();
 
-        System.out.println("Create your Password:");
+        System.out.println("Create your password:");
         String password = reader.readLine();
 
-        userService.login(username, password);
         try {
-            currentUser = userService.login(username, password);
-        } catch (BadCredentialsException e) {
-            System.out.println("\nYour username or login is incorrect.\nPlease try again.\n");
-            showSignUpScreen();
+            userService.createUser(username, password);
+        } catch (UnacceptableUsernameException | UserNameAlreadyTakenException e) {
+            showSignUpScreen(e.getMessage());
         }
+        showWelcomeScreen("User was successfully created.");
     }
 
     private static void logOut() {
-        System.out.println("Good bye");
-         currentUser = null;
+        currentUser = null;
+        showWelcomeScreen("Good bye");
     }
 }
 

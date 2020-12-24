@@ -15,6 +15,12 @@ public class DisplayUtils {
         }
     }
 
+    public static void showUserMessage(final String message) {
+        if (!message.equals("")) {
+            System.out.println(message);
+        }
+    }
+
     // displayTicket(ticket)
 
     // displayTickets(ticket)
