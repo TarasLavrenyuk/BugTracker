@@ -16,7 +16,6 @@ public class LoginScreen {
     private static User currentUser = null;
 
     private static UserService userService = UserService.getInstance();
-    private static TicketService ticketService = TicketService.getInstance();
 
     public static void main(String[] args) throws IOException {
         showWelcomeScreen();
