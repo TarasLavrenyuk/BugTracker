@@ -2,6 +2,8 @@ package com.cursor.bugtracker.service;
 
 import com.cursor.bugtracker.dao.TicketDao;
 import com.cursor.bugtracker.dao.TicketInMemoryDao;
+import com.cursor.bugtracker.dao.UserDao;
+import com.cursor.bugtracker.dao.UserInMemoryDao;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
 import com.cursor.bugtracker.exceptions.*;
