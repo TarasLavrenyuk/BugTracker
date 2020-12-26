@@ -11,6 +11,9 @@ import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.model.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +62,8 @@ public class TicketService implements Singleton {
                 status,
                 priority,
                 estimatedTime,
-                0L
+                0L,
+                LocalDate.now()
         );
 
         return ticketDao.save(ticket);
@@ -125,7 +129,7 @@ public class TicketService implements Singleton {
     }
 
     private void validateTime(final long estimatedTime) throws InvalidEstimatedTimeException {
-        if (estimatedTime < 60)
+        if (estimatedTime < 60_000)
             throw new InvalidEstimatedTimeException("Estimated time \"" + estimatedTime + "\" of the ticket was entered incorrectly.");
     }
 
@@ -183,6 +187,11 @@ public class TicketService implements Singleton {
 
         if (status != null) {
             ticket.setStatus(status);
+            if(status.equals(Status.IN_PROGRESS)){
+                ticket.setStartDate(LocalDateTime.now());
+            } else if(status.equals(Status.DONE)){
+                ticket.setSpentTime(calculateSpentTime(ticket));
+            }
         }
 
         if (priority != null) {
@@ -190,5 +199,12 @@ public class TicketService implements Singleton {
         }
 
         return ticket;
+    }
+
+    public long calculateSpentTime(Ticket ticket){
+        long startDate = ticket.getStartDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        long currentDate = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+        return currentDate - startDate;
     }
 }
