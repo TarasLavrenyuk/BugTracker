@@ -3,6 +3,9 @@ package com.cursor.bugtracker.model;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +20,8 @@ public class Ticket {
     private Priority priority;
     private long estimatedTime;
     private long spentTime;
+    private LocalDate creationDate;
+    private LocalDateTime startDate;
 
     public Ticket(String ticketId,
                   String name,
@@ -26,7 +31,8 @@ public class Ticket {
                   Status status,
                   Priority priority,
                   long estimatedTime,
-                  long spentTime
+                  long spentTime,
+                  LocalDate creationDate
     ) {
         this.ticketId = ticketId;
         this.name = name;
@@ -37,6 +43,7 @@ public class Ticket {
         this.priority = priority;
         this.estimatedTime = estimatedTime; // time in seconds
         this.spentTime = spentTime; // time in seconds
+        this.creationDate = creationDate;
     }
 
     public String getTicketId() {
@@ -101,5 +108,17 @@ public class Ticket {
 
     public void setSpentTime(long spentTime) {
         this.spentTime = spentTime;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 }
