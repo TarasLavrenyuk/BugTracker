@@ -41,6 +41,9 @@ public class LoginScreen {
                 showSignInScreen();
             } else if (option.equals("2")) {
                 showSignUpScreen();
+            }else{
+                //System.out.println("WRONG INPUT");
+                showWelcomeScreen("WRONG INPUT");
             }
             // TODO: else ... process unexpected input {sout(WRONG INPUT); showLoginScreen()}
         } catch (IOException e) {
@@ -100,9 +103,11 @@ public class LoginScreen {
         showWelcomeScreen("User was successfully created.");
     }
 
-    private static void logOut() {
+
+    public static void logOut() {
         currentUser = null;
         showWelcomeScreen("Good bye");
     }
 }
+
 
