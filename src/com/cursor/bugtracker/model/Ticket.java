@@ -19,6 +19,7 @@ public class Ticket {
     private Status status;
     private Priority priority;
     private long estimatedTime;
+    private static long totalEstimatedTime;
     private long spentTime;
     private LocalDate creationDate;
     private LocalDateTime startDate;
@@ -44,6 +45,7 @@ public class Ticket {
         this.estimatedTime = estimatedTime; // time in seconds
         this.spentTime = spentTime; // time in seconds
         this.creationDate = creationDate;
+        totalEstimatedTime += this.estimatedTime;
     }
 
     public String getTicketId() {
@@ -120,5 +122,9 @@ public class Ticket {
 
     public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
+    }
+
+    public static long getTotalEstimatedTime() {
+        return totalEstimatedTime;
     }
 }
