@@ -2,6 +2,7 @@ package com.cursor.bugtracker.controller;
 
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.service.TicketService;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -27,6 +28,7 @@ public class DisplayUtils {
             System.out.println(message);
         }
     }
+
 
     public static void displayTickets() {
         List<Ticket> allTickets = ticketService.getAllTickets();
