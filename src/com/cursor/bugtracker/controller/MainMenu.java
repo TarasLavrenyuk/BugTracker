@@ -1,5 +1,6 @@
 package com.cursor.bugtracker.controller;
 
+import com.cursor.bugtracker.exceptions.TicketNotFoundException;
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
@@ -49,11 +50,13 @@ public class MainMenu {
     }
 
 
-    public static void optionSelectionScreen() throws IOException {
+    public static void optionSelectionScreen()
+            throws IOException, TicketNotFoundException {
         optionSelectionScreen("");
     }
 
-    public static void optionSelectionScreen(final String message) throws IOException {
+    public static void optionSelectionScreen(final String message)
+            throws IOException, TicketNotFoundException {
         DisplayUtils.displayTickets();
         System.out.println("Choose your option:"
                 + System.lineSeparator() + "1. Create new ticket"
@@ -77,25 +80,21 @@ public class MainMenu {
     public static void createNewTicket() {
     }
 
-    public static void ticketDelete() throws IOException {
+    public static void ticketDelete() throws IOException, TicketNotFoundException {
         ticketDelete("");
     }
 
-    public static void ticketDelete(final String message) throws IOException {
-        List<Ticket> allTicket = ticketService.getAllTickets();
-
-        int size = allTicket.size();
-        int[] numberOfTickets = new int[size];
-        for (int i = 0; i < numberOfTickets.length; i++) {
-            numberOfTickets[i] = i + 1;
-        }
+    public static void ticketDelete(final String message)
+            throws IOException, TicketNotFoundException {
+        DisplayUtils.displayTickets();
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter ticket number");
-        int option = scanner.nextInt();
+        int option = scanner.nextInt() - 1;
 
-        if (allTicket.get(option) != null) {
-            allTicket.remove(option);
+        if (ticketService.getAllTickets().get(option) != null) {
+            String deleteID = ticketService.getAllTickets().get(option).getTicketId();
+            ticketService.delete(deleteID);
         } else {
             throw new IOException();
         }
