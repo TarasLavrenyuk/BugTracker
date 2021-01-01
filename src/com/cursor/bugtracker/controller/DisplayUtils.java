@@ -5,12 +5,12 @@ import com.cursor.bugtracker.service.TicketService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Scanner;
+
 
 public class DisplayUtils {
 
     private static TicketService ticketService = TicketService.getInstance();
-    private static int count = 0;
+    private static int indexTicket = 0;
 
     public static void clearScreen() {
         //Clears Screen in java
@@ -32,13 +32,14 @@ public class DisplayUtils {
 
     public static void displayTickets() {
         List<Ticket> allTickets = ticketService.getAllTickets();
-        while (count < allTickets.size()) {
-            System.out.println("Ticket №" + (count + 1) +
-                    System.lineSeparator() + "name - " + allTickets.get(count).getName() +
-                    System.lineSeparator() + "description - " + allTickets.get(count).getDescription() +
-                    System.lineSeparator() + "estimated time - " + allTickets.get(count).getEstimatedTime());
+        int numberOfTicket = 1;
+        while (indexTicket < allTickets.size()) {
+            System.out.println("Ticket №" + (numberOfTicket++) +
+                    System.lineSeparator() + "name - " + allTickets.get(indexTicket).getName() +
+                    System.lineSeparator() + "description - " + allTickets.get(indexTicket).getDescription() +
+                    System.lineSeparator() + "estimated time - " + allTickets.get(indexTicket).getEstimatedTime());
             System.out.println();
-            count++;
+            indexTicket++;
         }
     }
 
