@@ -45,7 +45,6 @@ public class Ticket {
         this.estimatedTime = estimatedTime; // time in seconds
         this.spentTime = spentTime; // time in seconds
         this.creationDate = creationDate;
-        totalEstimatedTime += this.estimatedTime;
     }
 
     public String getTicketId() {
@@ -126,5 +125,9 @@ public class Ticket {
 
     public static long getTotalEstimatedTime() {
         return totalEstimatedTime;
+    }
+
+    public void setTotalEstimatedTime() {
+        totalEstimatedTime += estimatedTime;
     }
 }
