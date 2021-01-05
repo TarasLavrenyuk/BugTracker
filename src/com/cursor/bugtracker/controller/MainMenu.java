@@ -104,19 +104,22 @@ public class MainMenu {
 
     public static void deleteTicket(final String message)
             throws IOException, TicketNotFoundException {
+        System.out.println(message);
         DisplayUtils.displayTickets();
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter ticket number");
-        int option = scanner.nextInt() - 1;
+        int ticketIndex = scanner.nextInt() - 1;
 
-        if (ticketService.getAllTickets().get(option) != null) {
-            String deleteID = ticketService.getAllTickets().get(option).getTicketId();
+        // Todo: check if ticketIndex is in correct range
+
+        if (ticketService.getAllTickets().get(ticketIndex) != null) {
+            String deleteID = ticketService.getAllTickets().get(ticketIndex).getTicketId();
             ticketService.delete(deleteID);
         } else {
-            throw new IOException();
+            deleteTicket("Incorrect input");
         }
-        deleteTicket("Incorrect input");
+        optionSelectionScreen();
     }
 
     public static void editTicket() {
