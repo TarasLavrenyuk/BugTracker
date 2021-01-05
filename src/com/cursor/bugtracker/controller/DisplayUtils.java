@@ -10,10 +10,8 @@ import java.util.List;
 public class DisplayUtils {
 
     private static TicketService ticketService = TicketService.getInstance();
-    private static int indexTicket = 0;
 
     public static void clearScreen() {
-        //Clears Screen in java
         try {
             if (System.getProperty("os.name").contains("Windows"))
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
@@ -29,21 +27,24 @@ public class DisplayUtils {
         }
     }
 
-
+    /**
+     * Show all tickets
+     */
     public static void displayTickets() {
         List<Ticket> allTickets = ticketService.getAllTickets();
-        int numberOfTicket = 1;
-        while (indexTicket < allTickets.size()) {
-            System.out.println("Ticket №" + (numberOfTicket++) +
-                    System.lineSeparator() + "name - " + allTickets.get(indexTicket).getName() +
-                    System.lineSeparator() + "description - " + allTickets.get(indexTicket).getDescription() +
-                    System.lineSeparator() + "estimated time - " + allTickets.get(indexTicket).getEstimatedTime());
-            System.out.println();
-            indexTicket++;
+        for (int index = 1; index <= allTickets.size(); index++) {
+            displayTicket(allTickets.get(index - 1), index);
         }
     }
 
-    // displayTickets(ticket)
-
-    //
+    /**
+     * Show one ticket
+     */
+    public static void displayTicket(final Ticket ticket, final int index) {
+        System.out.println("Ticket №" + (index) +
+                System.lineSeparator() + "name - " + ticket.getName() +
+                System.lineSeparator() + "description - " + ticket.getDescription() +
+                System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime() +
+                System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime());
+    }
 }
