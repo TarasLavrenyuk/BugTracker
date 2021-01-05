@@ -65,6 +65,7 @@ public class TicketService implements Singleton {
                 0L,
                 LocalDate.now()
         );
+        ticket.setTotalEstimatedTime();
 
         return ticketDao.save(ticket);
     }
