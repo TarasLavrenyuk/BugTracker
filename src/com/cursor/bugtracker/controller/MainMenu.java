@@ -16,18 +16,16 @@ import static com.cursor.bugtracker.controller.LoginScreen.logOut;
 
 public class MainMenu {
 
-
-    private static UserService userService = UserService.getInstance();
     private static TicketService ticketService = TicketService.getInstance();
-
 
     public static void displayMainMenu(final String message) throws IOException {
         System.out.println("Hello" + "UserNAME");
 
-        System.out.println("Please choose option\n" +
-                "1. Show all tickets\n" +
-                "2. Create new ticket\n" +
-                "3. Logout");
+        System.out.println("""
+                Please choose option
+                1. Show all tickets
+                2. Create new ticket
+                3. Logout""");
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             String option = reader.readLine();
@@ -45,7 +43,7 @@ public class MainMenu {
 
 
     public static void showAllTickets(final String message) {
-
+        // todo
         List<Ticket> allTickets = ticketService.getAllTickets();
     }
 
@@ -69,22 +67,42 @@ public class MainMenu {
         if (option.equals("1")) {
             createNewTicket();
         } else if (option.equals("2")) {
-            ticketDelete();
+            deleteTicket();
         } else if (option.equals("3")) {
-            ticketEdit();
+            editTicket();
         } else {
             optionSelectionScreen("Incorrect input");
         }
     }
 
     public static void createNewTicket() {
+        // sout(New ticket creation)
+
+        // sout(Enter name: )
+        // scan(name)
+
+        // sout(Enter description: )
+        // scan(description)
+
+        // sout(Enter ......: )
+        // scan(.....)
+
+        // try {
+        // Ticket newTicket = ticketService(name, description, .......)
+        // } catch (Exception 1) {
+        // process exception
+        // } catch (Exception 2) {
+        // process exception
+        // }
+
+        // return
     }
 
-    public static void ticketDelete() throws IOException, TicketNotFoundException {
-        ticketDelete("");
+    public static void deleteTicket() throws IOException, TicketNotFoundException {
+        deleteTicket("");
     }
 
-    public static void ticketDelete(final String message)
+    public static void deleteTicket(final String message)
             throws IOException, TicketNotFoundException {
         DisplayUtils.displayTickets();
 
@@ -98,10 +116,31 @@ public class MainMenu {
         } else {
             throw new IOException();
         }
-        ticketDelete("Incorrect input");
+        deleteTicket("Incorrect input");
     }
 
-    public static void ticketEdit() {
+    public static void editTicket() {
+        // sout(New ticket creation)
+
+        // sout(Edit name: )
+        // sout(name): user should be able to edit this text
+        // scan(name)
+
+        // sout(Enter description: )
+        // scan(description)
+
+        // sout(Enter ......: )
+        // scan(.....)
+
+        // try {
+        // Ticket newTicket = ticketService(name, description, .......)
+        // } catch (Exception 1) {
+        // process exception
+        // } catch (Exception 2) {
+        // process exception
+        // }
+
+        // return
 
     }
 }
