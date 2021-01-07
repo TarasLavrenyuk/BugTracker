@@ -6,6 +6,8 @@ import com.cursor.bugtracker.exceptions.*;
 import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class UserService implements Singleton {
@@ -56,6 +58,18 @@ public class UserService implements Singleton {
         if (!username.startsWith("[a-z]")) {
             throw new UnacceptableUsernameException("Username must start with letter a small letter.");
         }
+    }
+
+    public List<String> findByName(final String[] name) {
+        List<String> namesExist = new ArrayList<>();
+        for (String tempName : name) {
+            if (userDao.getUserByUsername(tempName) != null) {
+                namesExist.add(tempName);
+            }else {
+                return null;
+            }
+        }
+        return namesExist;
     }
 
 
