@@ -55,8 +55,8 @@ public class UserService implements Singleton {
             throw new UnacceptableUsernameException("Username unacceptable." +
                     " You can use only letters, digits and elements: ._-");
         }
-        if (!username.startsWith("[a-z]")) {
-            throw new UnacceptableUsernameException("Username must start with letter a small letter.");
+        if (!Character.isLetter(username.charAt(0))) {
+            throw new UnacceptableUsernameException("Username must start with a small letter of english alphabet.");
         }
     }
 
@@ -65,7 +65,7 @@ public class UserService implements Singleton {
         for (String tempName : name) {
             if (userDao.getUserByUsername(tempName) != null) {
                 namesExist.add(tempName);
-            }else {
+            } else {
                 return null;
             }
         }
