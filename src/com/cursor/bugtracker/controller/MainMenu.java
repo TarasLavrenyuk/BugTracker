@@ -243,4 +243,20 @@ public class MainMenu {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Show all tickets
+     */
+    public static void displayTickets(List<Ticket> tickets) {
+        for (int index = 1; index <= tickets.size(); index++) {
+            DisplayUtils.displayTicket(tickets.get(index - 1), index);
+        }
+    }
+
+    /**
+     * Show all tickets
+     */
+    public static void displayTickets() {
+        displayTickets(ticketService.getAllTickets());
+    }
 }

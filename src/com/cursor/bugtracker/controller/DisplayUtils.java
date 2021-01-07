@@ -28,16 +28,6 @@ public class DisplayUtils {
     }
 
     /**
-     * Show all tickets
-     */
-    public static void displayTickets() {
-        List<Ticket> allTickets = ticketService.getAllTickets();
-        for (int index = 1; index <= allTickets.size(); index++) {
-            displayTicket(allTickets.get(index - 1), index);
-        }
-    }
-
-    /**
      * Show one ticket
      */
     public static void displayTicket(final Ticket ticket, final int index) {
