@@ -154,7 +154,7 @@ public class TicketService implements Singleton {
     }
 
     public void delete(final String ticketId) throws TicketNotFoundException {
-        if (!ticketDao.removeById(ticketId)) {
+        if (ticketDao.removeById(ticketId) == null) {
             throw new TicketNotFoundException("The ticket with id \"" + ticketId + "\" was not found.");
         }
     }

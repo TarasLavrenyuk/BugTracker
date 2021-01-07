@@ -108,10 +108,8 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
     }
 
     @Override
-    public boolean removeById(String ticketId) {
-        tickets.remove(ticketId);
-        return Boolean.parseBoolean(ticketId);
-
+    public Ticket removeById(String ticketId) {
+        return tickets.remove(ticketId);
     }
 
     @Override

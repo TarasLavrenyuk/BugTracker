@@ -12,5 +12,5 @@ public interface TicketDao {
 
     List<Ticket> getAllTickets();
 
-    boolean removeById(String tickedId);
+    Ticket removeById(String tickedId);
 }
