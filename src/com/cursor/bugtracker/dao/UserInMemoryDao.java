@@ -48,8 +48,7 @@ public class UserInMemoryDao implements UserDao, Singleton {
 
     @Override
     public User save(User user) {
-        users.put(user.getUserId(), user);
-        return user;
+        return users.put(user.getUserId(), user);
     }
 
     @Override
@@ -58,29 +57,24 @@ public class UserInMemoryDao implements UserDao, Singleton {
     }
 
     @Override
-    public boolean deleteUserById(String userId) {
-        // TODO;
-        users.remove(userId);
-        return Boolean.parseBoolean(userId);
+    public User deleteUserById(String userId) {
+        return users.remove(userId);
     }
 
-    // TODO;
     public List<User> findByName(String query) {
         final List<User> result = new LinkedList<>();
-        for (User users : result) {
-            if (users.getUsername().equals(query)) {
-                return result;
+        for (User user : getAllUsers()) {
+            if (user.getName().toLowerCase().contains(query.toLowerCase())) {
+                result.add(user);
             }
-            // find users
         }
-
-        return null;
+        return result;
     }
 
     @Override
     public User getUserByUsername(String username) {
         for (User user : getAllUsers()) {
-            if (user.getUsername().equals(username)) {
+            if (user.getName().toLowerCase().equals(username.toLowerCase())) {
                 return user;
             }
         }
