@@ -25,8 +25,8 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
         String id1 = UUID.randomUUID().toString();
         Ticket ticket1 = new Ticket(
                 id1,
-                "Create app",
-                "Description of the god damn task",
+                "Just ticket",
+                "Dude, it is description of the tickets",
                 new ArrayList<>(),
                 "5a817bdd-8294-4b05-a8f6-dc0e631563e5",
                 Status.TODO,
@@ -37,9 +37,9 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 LocalDate.now());
         String id2 = UUID.randomUUID().toString();
         Ticket ticket2 = new Ticket(
-                id1,
-                "Create app",
-                "Description of the god damn task",
+                id2,
+                "Economy class ticket",
+                "Bro, you can afford me)))",
                 new ArrayList<>(),
                 "7c2a397b-3634-426f-bf57-4a9bda5d6ede",
                 Status.TODO,
@@ -50,9 +50,9 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 LocalDate.now());
         String id3 = UUID.randomUUID().toString();
         Ticket ticket3 = new Ticket(
-                id1,
-                "Create app",
-                "Description of the god damn task",
+                id3,
+                "Business class ticket",
+                "I supposed, you are real businessmen",
                 new ArrayList<>(),
                 "4d87fd3a-ae9c-4834-a166-c745a8c92cda",
                 Status.TODO,
@@ -63,9 +63,9 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 LocalDate.now());
         String id4 = UUID.randomUUID().toString();
         Ticket ticket4 = new Ticket(
-                id1,
-                "Create app",
-                "Description of the god damn task",
+                id4,
+                "VIP-class ticket",
+                "You might be a really big boss",
                 new ArrayList<>(),
                 "9e7c6150-54f4-4f9e-a706-1412d65eb03a",
                 Status.TODO,
@@ -76,9 +76,9 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 LocalDate.now());
         String id5 = UUID.randomUUID().toString();
         Ticket ticket5 = new Ticket(
-                id1,
-                "Create app",
-                "Description of the god damn task",
+                id5,
+                "President class ticket",
+                "Hi mr. President",
                 new ArrayList<>(),
                 "be3c0e68-d35c-4960-9c88-82f789bbcd06",
                 Status.TODO,
@@ -87,7 +87,6 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 5000,
 
                 LocalDate.now());
-
 
         tickets.put(id1, ticket1);
         tickets.put(id2, ticket2);
