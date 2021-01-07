@@ -4,7 +4,6 @@ import com.cursor.bugtracker.exceptions.BadCredentialsException;
 import com.cursor.bugtracker.exceptions.UnacceptableUsernameException;
 import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
 import com.cursor.bugtracker.model.User;
-import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
 
 import java.io.BufferedReader;
@@ -17,7 +16,7 @@ public class LoginScreen {
 
     private static UserService userService = UserService.getInstance();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         showWelcomeScreen();
     }
 
@@ -26,7 +25,7 @@ public class LoginScreen {
     }
 
     private static void showWelcomeScreen(final String message) {
-        DisplayUtils.clearScreen();
+        // clear screen
         DisplayUtils.showUserMessage(message);
         System.out.println("1. Sign in" +
                 System.lineSeparator() +
@@ -41,8 +40,7 @@ public class LoginScreen {
                 showSignInScreen();
             } else if (option.equals("2")) {
                 showSignUpScreen();
-            }else{
-                //System.out.println("WRONG INPUT");
+            } else {
                 showWelcomeScreen("WRONG INPUT");
             }
             // TODO: else ... process unexpected input {sout(WRONG INPUT); showLoginScreen()}
@@ -56,7 +54,7 @@ public class LoginScreen {
     }
 
     private static void showSignInScreen(final String message) throws IOException {
-        DisplayUtils.clearScreen();
+        // clear screen
         DisplayUtils.showUserMessage(message);
         System.out.println("Press esc to go back to welcome screen.");
         System.out.println("Type login: ");
@@ -72,7 +70,7 @@ public class LoginScreen {
         try {
             currentUser = userService.login(username, password);
             System.out.println("Your initialization is successful");
-            // TODO: open next screen
+            MainMenu.displayMainMenu("");
         } catch (BadCredentialsException e) {
             showSignInScreen("Your username or login is incorrect.\nPlease try again.");
         }
@@ -102,7 +100,6 @@ public class LoginScreen {
         }
         showWelcomeScreen("User was successfully created.");
     }
-
 
     public static void logOut() {
         currentUser = null;

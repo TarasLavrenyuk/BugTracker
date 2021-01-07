@@ -13,7 +13,6 @@ import com.cursor.bugtracker.service.UserService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,7 +24,8 @@ public class MainMenu {
     private static TicketService ticketService = TicketService.getInstance();
     private static UserService userService = UserService.getInstance();
 
-    public static void displayMainMenu(final String message) throws IOException {
+    public static void displayMainMenu(final String message) {
+        System.out.println(message);
         System.out.println("Hello" + "UserNAME");
 
         System.out.println("""
@@ -37,7 +37,7 @@ public class MainMenu {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             String option = reader.readLine();
             if (option.equals("1")) {
-                showAllTickets(" ");
+                showTicketMenu();
             } else if (option.equals("2")) {
                 createNewTicket();
             } else if (option.equals("3")) {
@@ -48,37 +48,36 @@ public class MainMenu {
         }
     }
 
-
-    public static void showAllTickets(final String message) {
-        // todo
-        List<Ticket> allTickets = ticketService.getAllTickets();
+    public static void showTicketMenu() {
+        showTicketMenu("");
     }
 
-
-    public static void optionSelectionScreen()
-            throws IOException, TicketNotFoundException {
-        optionSelectionScreen("");
-    }
-
-    public static void optionSelectionScreen(final String message)
-            throws IOException, TicketNotFoundException {
-        DisplayUtils.displayTickets();
+    public static void showTicketMenu(final String message) {
+        // clearScreen
+        displayTickets();
+        System.out.println(message);
         System.out.println("Choose your option:"
                 + System.lineSeparator() + "1. Create new ticket"
                 + System.lineSeparator() + "2. Delete ticket"
                 + System.lineSeparator() + "3. Edit ticket");
 
         Scanner reader = new Scanner(System.in);
-        DisplayUtils.clearScreen();
+        // clear screen
         String option = reader.nextLine();
         if (option.equals("1")) {
             createNewTicket();
         } else if (option.equals("2")) {
-            deleteTicket();
+            try {
+                deleteTicket();
+            } catch (IOException e) {
+                showTicketMenu("Oops, something went wrong. Please try again.");
+            } catch (TicketNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
         } else if (option.equals("3")) {
             editTicket();
         } else {
-            optionSelectionScreen("Incorrect input");
+            showTicketMenu("Incorrect input");
         }
     }
 
@@ -122,7 +121,7 @@ public class MainMenu {
         System.out.println("Enter estimated time");
         long estimatedTime = scanner.nextLong();
 
-        try{
+        try {
             Ticket newTicket = ticketService.create(
                     name,
                     description,
@@ -140,25 +139,29 @@ public class MainMenu {
         deleteTicket("");
     }
 
-    public static void deleteTicket(final String message)
-            throws IOException, TicketNotFoundException {
+    public static void deleteTicket(final String message) {
         System.out.println(message);
-        DisplayUtils.displayTickets();
+        List<Ticket> tickets = ticketService.getAllTickets();
+        displayTickets(tickets);
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter ticket number");
+        System.out.println("Enter ticket number to delete");
         int ticketIndex = scanner.nextInt() - 1;
-        if (ticketIndex >= ticketService.getAllTickets().size() || ticketIndex < 0) {
+        if (ticketIndex < 0 || ticketIndex > tickets.size() - 1) {
             deleteTicket("A ticket with this number does not exist. Enter the number again");
         }
 
-        if (ticketService.getAllTickets().get(ticketIndex) != null) {
-            String deleteID = ticketService.getAllTickets().get(ticketIndex).getTicketId();
-            ticketService.delete(deleteID);
+        Ticket ticketToDelete = tickets.get(ticketIndex);
+        if (ticketToDelete != null) {
+            try {
+                ticketService.delete(ticketToDelete.getTicketId());
+            } catch (TicketNotFoundException e) {
+                deleteTicket("Something went wrong. Ticket was not deleted. Try again.");
+            }
         } else {
             deleteTicket("Incorrect input");
         }
-        optionSelectionScreen();
+        showTicketMenu();
     }
 
     public static void editTicket() {
@@ -168,13 +171,14 @@ public class MainMenu {
     public static void editTicket(final String message) {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Select the ticket number you want to edit");
-        DisplayUtils.displayTickets();
+        List<Ticket> tickets = ticketService.getAllTickets();
+        displayTickets(tickets);
         int numberTicket = scanner.nextInt();
 
-        if (numberTicket < 1 || numberTicket > ticketService.getAllTickets().size()){
+        if (numberTicket < 1 || numberTicket > tickets.size()) {
             editTicket("Incorrect input");
         }
-            Ticket ticket = ticketService.getAllTickets().get(numberTicket - 1);
+        Ticket ticket = tickets.get(numberTicket - 1);
 
         System.out.println("Enter new name of ticket, or skip the step: ");
         String name = ticket.getName();
