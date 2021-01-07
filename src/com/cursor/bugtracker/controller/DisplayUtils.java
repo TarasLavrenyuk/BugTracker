@@ -1,6 +1,7 @@
 package com.cursor.bugtracker.controller;
 
 import com.cursor.bugtracker.model.Ticket;
+import com.cursor.bugtracker.model.User;
 import com.cursor.bugtracker.service.TicketService;
 
 import java.io.IOException;
@@ -36,5 +37,10 @@ public class DisplayUtils {
                 System.lineSeparator() + "description - " + ticket.getDescription() +
                 System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime() +
                 System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime());
+    }
+
+    public static void displayUsernames(List<User> users) {
+        System.out.println("Users: ");
+        users.forEach(user -> System.out.print(user.getName() + " "));
     }
 }

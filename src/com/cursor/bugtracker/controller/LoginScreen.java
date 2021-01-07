@@ -12,8 +12,6 @@ import java.io.InputStreamReader;
 
 public class LoginScreen {
 
-    private static User currentUser = null;
-
     private static UserService userService = UserService.getInstance();
 
     public static void main(String[] args) {
@@ -68,7 +66,7 @@ public class LoginScreen {
         String password = reader.readLine();
 
         try {
-            currentUser = userService.login(username, password);
+            Session.currentUser = userService.login(username, password);
             System.out.println("Your initialization is successful");
             MainMenu.displayMainMenu("");
         } catch (BadCredentialsException e) {
@@ -102,7 +100,7 @@ public class LoginScreen {
     }
 
     public static void logOut() {
-        currentUser = null;
+        Session.currentUser = null;
         showWelcomeScreen("Good bye");
     }
 }

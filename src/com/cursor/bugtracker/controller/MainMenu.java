@@ -2,7 +2,6 @@ package com.cursor.bugtracker.controller;
 
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
-import com.cursor.bugtracker.exceptions.InvalidEstimatedTimeException;
 import com.cursor.bugtracker.exceptions.InvalidTicketNameException;
 import com.cursor.bugtracker.exceptions.TicketNotFoundException;
 import com.cursor.bugtracker.exceptions.UserNotFoundException;
@@ -13,6 +12,7 @@ import com.cursor.bugtracker.service.UserService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,7 +26,7 @@ public class MainMenu {
 
     public static void displayMainMenu(final String message) {
         System.out.println(message);
-        System.out.println("Hello" + "UserNAME");
+        System.out.println("Hello " + Session.currentUser.getName());
 
         System.out.println("""
                 Please choose option
@@ -39,7 +39,7 @@ public class MainMenu {
             if (option.equals("1")) {
                 showTicketMenu();
             } else if (option.equals("2")) {
-                createNewTicket();
+                TicketOperationsScreen.createNewTicket();
             } else if (option.equals("3")) {
                 logOut();
             }
@@ -65,7 +65,7 @@ public class MainMenu {
         // clear screen
         String option = reader.nextLine();
         if (option.equals("1")) {
-            createNewTicket();
+            TicketOperationsScreen.createNewTicket();
         } else if (option.equals("2")) {
             try {
                 deleteTicket();
@@ -78,60 +78,6 @@ public class MainMenu {
             editTicket();
         } else {
             showTicketMenu("Incorrect input");
-        }
-    }
-
-    public static void createNewTicket() {
-        final Scanner scanner = new Scanner(System.in);
-        System.out.println("New ticket creation");
-
-        System.out.println("Enter name of ticket: ");
-        String name = scanner.nextLine();
-
-        System.out.println("Enter a description, or skip the step ");
-        String description = scanner.nextLine();
-
-        System.out.println
-                ("Enter separated by space the names of registered users in the list of assignee");
-        String[] tempNameLine = scanner.nextLine().split(" ");
-        List<String> assigneeList = userService.findByName(tempNameLine); //определиться с тикетСервис
-
-        System.out.println("Enter the name of reporter");
-        String reporter = scanner.nextLine();
-
-        System.out.println("Enter the status of your ticket: TODO, IN_PROGRESS, IN_REVIEW, DONE;");
-        String selectStatus = scanner.nextLine().toUpperCase();
-        Status status = switch (selectStatus) {
-            case "TODO" -> Status.TODO;
-            case "IN_PROGRESS" -> Status.IN_PROGRESS;
-            case "IN_REVIEW" -> Status.IN_REVIEW;
-            case "DONE" -> Status.DONE;
-            default -> throw new IllegalStateException("Unexpected value: " + selectStatus);
-        };
-
-        System.out.println("Enter priority of ticket: LOW, MEDIUM, HIGH");
-        String selectPriority = scanner.nextLine().toUpperCase();
-        Priority priority = switch (selectPriority) {
-            case "LOW" -> Priority.LOW;
-            case "MEDIUM" -> Priority.MEDIUM;
-            case "HIGH" -> Priority.HIGH;
-            default -> throw new IllegalStateException("Unexpected value: " + selectPriority);
-        };
-
-        System.out.println("Enter estimated time");
-        long estimatedTime = scanner.nextLong();
-
-        try {
-            Ticket newTicket = ticketService.create(
-                    name,
-                    description,
-                    assigneeList,
-                    reporter,
-                    status,
-                    priority,
-                    estimatedTime);
-        } catch (InvalidTicketNameException | UserNotFoundException | InvalidEstimatedTimeException e) {
-            e.printStackTrace();
         }
     }
 
@@ -173,12 +119,12 @@ public class MainMenu {
         System.out.println("Select the ticket number you want to edit");
         List<Ticket> tickets = ticketService.getAllTickets();
         displayTickets(tickets);
-        int numberTicket = scanner.nextInt();
+        int numberTicket = scanner.nextInt() - 1;
 
-        if (numberTicket < 1 || numberTicket > tickets.size()) {
+        if (numberTicket < 0 || numberTicket > tickets.size() - 1) {
             editTicket("Incorrect input");
         }
-        Ticket ticket = tickets.get(numberTicket - 1);
+        Ticket ticket = tickets.get(numberTicket);
 
         System.out.println("Enter new name of ticket, or skip the step: ");
         String name = ticket.getName();
@@ -198,15 +144,8 @@ public class MainMenu {
         List<String> assigneeList = ticket.getAssigneeList();
         if (!scanner.nextLine().isBlank()) {
             String[] tempNameLine = scanner.nextLine().split(" ");
-            assigneeList = userService.findByName(tempNameLine); //определиться с тикетСервис
+            assigneeList = userService.findByName(tempNameLine);
         }
-
-        System.out.println("Enter new name of reporter, or skip the step:");
-        String reporter = ticket.getReporter();
-        if (!scanner.nextLine().isBlank()) {
-            reporter = scanner.nextLine();
-        }
-
 
         System.out.println("Enter new status of your ticket: TODO, IN_PROGRESS, IN_REVIEW, DONE" +
                 ", or skip the step:");

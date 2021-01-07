@@ -7,8 +7,10 @@ import com.cursor.bugtracker.interfaces.Singleton;
 import com.cursor.bugtracker.model.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class UserService implements Singleton {
 
@@ -60,6 +62,9 @@ public class UserService implements Singleton {
         }
     }
 
+    /**
+     * @deprecated please use UserService.checkIfUsersExist
+     */
     public List<String> findByName(final String[] name) {
         List<String> namesExist = new ArrayList<>();
         for (String tempName : name) {
@@ -70,6 +75,15 @@ public class UserService implements Singleton {
             }
         }
         return namesExist;
+    }
+
+    public boolean checkIfUsersExist(final List<String> usernames) throws WrongUsernameException {
+        for (String username : usernames) {
+            if (userDao.getUserByUsername(username) == null) {
+                throw new WrongUsernameException("User with username  \"" + username + "\" does not exists.");
+            }
+        }
+        return true;
     }
 
 
@@ -97,5 +111,14 @@ public class UserService implements Singleton {
             throw new UnacceptablePasswordException("Password is not correct. " +
                     "You must use not less then three digits");
         }
+    }
+
+    /**
+     * @return user sorted by username
+     */
+    public List<User> getAllUsers() {
+        return userDao.getAllUsers().stream()
+                .sorted(Comparator.comparing(User::getName))
+                .collect(Collectors.toList());
     }
 }
