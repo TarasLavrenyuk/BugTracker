@@ -130,7 +130,7 @@ public class TicketService implements Singleton {
     }
 
     private void validateTime(final long estimatedTime) throws InvalidEstimatedTimeException {
-        if (estimatedTime < 60_000)
+        if (estimatedTime < 20)
             throw new InvalidEstimatedTimeException("Estimated time \"" + estimatedTime + "\" of the ticket was entered incorrectly.");
     }
 
@@ -206,6 +206,6 @@ public class TicketService implements Singleton {
         long startDate = ticket.getStartDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         long currentDate = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-        return currentDate - startDate;
+        return (startDate-currentDate)/60_000 + 1;
     }
 }

@@ -18,9 +18,9 @@ public class Ticket {
     private String reporter; // reporter id
     private Status status;
     private Priority priority;
-    private long estimatedTime;
-    private static long totalEstimatedTime;
-    private long spentTime;
+    private long estimatedTime; // in minutes
+    private static long totalEstimatedTime; // in minutes
+    private long spentTime; // in minutes
     private LocalDate creationDate;
     private LocalDateTime startDate;
 
