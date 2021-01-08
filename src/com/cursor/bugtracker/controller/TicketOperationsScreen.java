@@ -43,6 +43,8 @@ public class TicketOperationsScreen {
                     estimatedTime);
         } catch (InvalidTicketNameException | UserNotFoundException | InvalidEstimatedTimeException e) {
             e.printStackTrace();
+        } finally {
+            MainMenu.showTicketMenu();
         }
     }
 

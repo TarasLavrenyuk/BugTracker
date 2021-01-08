@@ -59,7 +59,8 @@ public class MainMenu {
         System.out.println("Choose your option:"
                 + System.lineSeparator() + "1. Create new ticket"
                 + System.lineSeparator() + "2. Delete ticket"
-                + System.lineSeparator() + "3. Edit ticket");
+                + System.lineSeparator() + "3. Edit ticket"
+                + System.lineSeparator() + "4. Back to the previous menu");
 
         Scanner reader = new Scanner(System.in);
         // clear screen
@@ -76,6 +77,8 @@ public class MainMenu {
             }
         } else if (option.equals("3")) {
             editTicket();
+        } else if (option.equals("4")) {
+            displayMainMenu("");
         } else {
             showTicketMenu("Incorrect input");
         }
@@ -184,6 +187,9 @@ public class MainMenu {
             );
         } catch (InvalidTicketNameException | UserNotFoundException | TicketNotFoundException e) {
             e.printStackTrace();
+        }
+        finally {
+            showTicketMenu();
         }
     }
 
