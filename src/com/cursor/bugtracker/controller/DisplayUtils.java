@@ -1,9 +1,7 @@
 package com.cursor.bugtracker.controller;
-
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.model.User;
 import com.cursor.bugtracker.service.TicketService;
-
 import java.io.IOException;
 import java.util.List;
 
