@@ -1,11 +1,8 @@
 package com.cursor.bugtracker.controller;
-
 import com.cursor.bugtracker.exceptions.BadCredentialsException;
 import com.cursor.bugtracker.exceptions.UnacceptableUsernameException;
 import com.cursor.bugtracker.exceptions.UserNameAlreadyTakenException;
-import com.cursor.bugtracker.model.User;
 import com.cursor.bugtracker.service.UserService;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
