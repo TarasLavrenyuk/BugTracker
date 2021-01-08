@@ -96,8 +96,9 @@ public class TicketOperationsScreen {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Enter new name of ticket, or skip the step: ");
         String name = defaultTicketName;
-        if (!scanner.nextLine().isBlank()) {
-            name = scanner.nextLine();
+        String readEditedName = scanner.nextLine();
+        if (!readEditedName.isBlank()) {
+            name = readEditedName;
         }
         return name;
     }
@@ -112,8 +113,9 @@ public class TicketOperationsScreen {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Enter new description, or skip the step: ");
         String description = defaultTicketDescription;
-        if (!scanner.nextLine().isBlank()) {
-            description = scanner.nextLine();
+        String readEdited = scanner.nextLine();
+        if (!readEdited.isBlank()) {
+            description = readEdited;
         }
         return description;
     }
@@ -150,11 +152,12 @@ public class TicketOperationsScreen {
         System.out.println
                 ("Enter separated by space new list the names of registered users in the list of assignee" +
                         System.lineSeparator() + ", or skip the step: ");
+        List<User> users = userService.getAllUsers();
+        DisplayUtils.displayUsernames(users);
         List<String> assigneeList = defaultAssigneeList;
-        if (!scanner.nextLine().isBlank()) {
-            List<User> users = userService.getAllUsers();
-            DisplayUtils.displayUsernames(users);
-            List<String> assigneesUsernames = Arrays.asList(scanner.nextLine().split(" "));
+        String readEditValues = scanner.nextLine();
+        if (!readEditValues.isBlank()) {
+            List<String> assigneesUsernames = Arrays.asList(readEditValues.split(" "));
             try {
                 userService.checkIfUsersExist(assigneesUsernames);
             } catch (WrongUsernameException e) {
@@ -191,8 +194,9 @@ public class TicketOperationsScreen {
         System.out.println("Enter the status of your ticket: " + Arrays.asList(Status.values()) +
                 ", or skip the step:");
         Status status = defaultStatus;
-        if (!scanner.nextLine().isBlank()) {
-            String statusString = scanner.nextLine().toUpperCase();
+        String readEditValues = scanner.nextLine();
+        if (!readEditValues.isBlank()) {
+            String statusString = readEditValues.toUpperCase();
             try {
                 return Status.valueOf(statusString);
             } catch (IllegalStateException exception) {
@@ -220,8 +224,9 @@ public class TicketOperationsScreen {
         System.out.println("Enter the priority of your ticket: "
                 + Arrays.asList(Priority.values()) + ", or skip the step:");
         Priority priority = defaultPriority;
-        if (!scanner.nextLine().isBlank()) {
-            String priorityString = scanner.nextLine().toUpperCase();
+        String readEditValues = scanner.nextLine();
+        if (!readEditValues.isBlank()) {
+            String priorityString = readEditValues.toUpperCase();
             try {
                 return Priority.valueOf(priorityString);
             } catch (IllegalStateException exception) {
