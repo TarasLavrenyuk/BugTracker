@@ -35,7 +35,7 @@ public class DisplayUtils {
         System.out.println("Ticket №" + (index) +
                 System.lineSeparator() + "name - " + ticket.getName() +
                 System.lineSeparator() + "description - " + ticket.getDescription() +
-                System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime() +
+                System.lineSeparator() + "spent time - " + ticket.getSpentTime() +
                 System.lineSeparator() + "estimated time - " + ticket.getEstimatedTime());
     }
 
