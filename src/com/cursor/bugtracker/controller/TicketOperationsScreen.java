@@ -190,9 +190,11 @@ public class TicketOperationsScreen {
     private static Status readEditedStatus(final Status defaultStatus) {
         System.out.println("Enter the status of your ticket: " + Arrays.asList(Status.values()) + ", or skip the step:");
         final Scanner scanner = new Scanner(System.in);
-        String editedStatus = scanner.nextLine();
-        if (!editedStatus.isBlank()) {
-            String statusString = editedStatus.trim().toUpperCase();
+        System.out.println("Enter the status of your ticket: " + Arrays.asList(Status.values()) +
+                ", or skip the step:");
+        Status status = defaultStatus;
+        if (!scanner.nextLine().isBlank()) {
+            String statusString = scanner.nextLine().toUpperCase();
             try {
                 return Status.valueOf(statusString);
             } catch (IllegalStateException exception) {
