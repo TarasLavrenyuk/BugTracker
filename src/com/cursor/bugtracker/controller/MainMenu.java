@@ -1,8 +1,11 @@
 package com.cursor.bugtracker.controller;
+
+import com.cursor.bugtracker.dto.TicketDto;
 import com.cursor.bugtracker.exceptions.TicketNotFoundException;
 import com.cursor.bugtracker.model.Ticket;
 import com.cursor.bugtracker.service.TicketService;
 import com.cursor.bugtracker.service.UserService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,8 +17,7 @@ import static com.cursor.bugtracker.controller.LoginScreen.logOut;
 
 public class MainMenu {
 
-    private static TicketService ticketService = TicketService.getInstance();
-    private static UserService userService = UserService.getInstance();
+    private static final TicketService ticketService = TicketService.getInstance();
 
     public static void displayMainMenu(final String message) {
         System.out.println(message);
@@ -77,7 +79,7 @@ public class MainMenu {
 
     public static void deleteTicket(final String message) {
         System.out.println(message);
-        List<Ticket> tickets = ticketService.getAllTickets();
+        List<TicketDto> tickets = ticketService.getAllTickets();
         displayTickets(tickets);
 
         Scanner scanner = new Scanner(System.in);
@@ -100,11 +102,10 @@ public class MainMenu {
         showTicketMenu();
     }
 
-
     /**
      * Show all tickets
      */
-    public static void displayTickets(List<Ticket> tickets) {
+    public static void displayTickets(List<TicketDto> tickets) {
         for (int index = 1; index <= tickets.size(); index++) {
             DisplayUtils.displayTicket(tickets.get(index - 1), index);
         }

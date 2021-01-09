@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 
 public class LoginScreen {
 
-    private static UserService userService = UserService.getInstance();
+    private static final UserService userService = UserService.getInstance();
 
     public static void main(String[] args) {
         showWelcomeScreen();

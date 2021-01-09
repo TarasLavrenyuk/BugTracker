@@ -7,6 +7,7 @@ import com.cursor.bugtracker.model.Ticket;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TicketInMemoryDao implements TicketDao, Singleton {
 
@@ -46,7 +47,6 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 Priority.MEDIUM,
                 18000, // 5 hours
                 5000,
-
                 LocalDate.now());
         String id3 = UUID.randomUUID().toString();
         Ticket ticket3 = new Ticket(
@@ -59,7 +59,6 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 Priority.MEDIUM,
                 18000, // 5 hours
                 5000,
-
                 LocalDate.now());
         String id4 = UUID.randomUUID().toString();
         Ticket ticket4 = new Ticket(
@@ -72,7 +71,6 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 Priority.MEDIUM,
                 18000, // 5 hours
                 5000,
-
                 LocalDate.now());
         String id5 = UUID.randomUUID().toString();
         Ticket ticket5 = new Ticket(
@@ -85,7 +83,6 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
                 Priority.MEDIUM,
                 18000, // 5 hours
                 5000,
-
                 LocalDate.now());
 
         tickets.put(id1, ticket1);
@@ -113,14 +110,18 @@ public class TicketInMemoryDao implements TicketDao, Singleton {
 
     @Override
     public List<Ticket> getAllTickets() {
-       return new ArrayList<>(tickets.values());
+        return tickets.values().stream()
+                .sorted(Comparator.comparing(Ticket::getName))
+                .sorted(Comparator.comparingInt(ticket -> ticket.getPriority().ordinal()))
+                .sorted(Comparator.comparingInt(ticket -> ticket.getStatus().ordinal()))
+                .collect(Collectors.toList());
     }
 
     public List<Ticket> findByName(String query) {
         final List<Ticket> result = new LinkedList<>();
         for (Ticket ticket : tickets.values()) {
-           if (ticket.getName().contains(query) || ticket.getDescription().contains(query))
-            result.add(ticket);
+            if (ticket.getName().contains(query) || ticket.getDescription().contains(query))
+                result.add(ticket);
         }
         return result;
     }

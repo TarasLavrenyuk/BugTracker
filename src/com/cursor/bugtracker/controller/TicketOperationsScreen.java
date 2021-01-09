@@ -1,5 +1,7 @@
 package com.cursor.bugtracker.controller;
 
+import com.cursor.bugtracker.dao.TicketDao;
+import com.cursor.bugtracker.dto.TicketDto;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
 import com.cursor.bugtracker.exceptions.*;
@@ -15,8 +17,8 @@ import static com.cursor.bugtracker.controller.MainMenu.displayTickets;
 
 public class TicketOperationsScreen {
 
-    private static UserService userService = UserService.getInstance();
-    private static TicketService ticketService = TicketService.getInstance();
+    private static final UserService userService = UserService.getInstance();
+    private static final TicketService ticketService = TicketService.getInstance();
 
     public static void editTicket() {
         editTicket("");
@@ -25,7 +27,7 @@ public class TicketOperationsScreen {
     public static void editTicket(final String message) {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Select the ticket number you want to edit");
-        List<Ticket> tickets = ticketService.getAllTickets();
+        List<TicketDto> tickets = ticketService.getAllTickets();
         displayTickets(tickets);
         int numberTicket = scanner.nextInt() - 1;
 
@@ -50,7 +52,7 @@ public class TicketOperationsScreen {
                     priority
             );
         } catch (InvalidTicketNameException | UserNotFoundException | TicketNotFoundException e) {
-            e.printStackTrace();
+            editTicket(e.getMessage());
         } finally {
             MainMenu.showTicketMenu("You have successfully edited the ticket");
         }
@@ -95,11 +97,11 @@ public class TicketOperationsScreen {
     private static String readEditedTicketName(String defaultTicketName) {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Enter new name of ticket, or skip the step: ");
-        String name = defaultTicketName;
-        if (!scanner.nextLine().isBlank()) {
-            name = scanner.nextLine();
+        String editedTicketName = scanner.nextLine();
+        if (!editedTicketName.isBlank()) {
+            return editedTicketName;
         }
-        return name;
+        return defaultTicketName;
     }
 
     private static String readDescription() {
@@ -111,11 +113,11 @@ public class TicketOperationsScreen {
     private static String readEditedDescription(String defaultTicketDescription) {
         final Scanner scanner = new Scanner(System.in);
         System.out.println("Enter new description, or skip the step: ");
-        String description = defaultTicketDescription;
-        if (!scanner.nextLine().isBlank()) {
-            description = scanner.nextLine();
+        String editedDescription = scanner.nextLine();
+        if (!editedDescription.isBlank()) {
+            return editedDescription;
         }
-        return description;
+        return defaultTicketDescription;
     }
 
     /**
@@ -146,15 +148,14 @@ public class TicketOperationsScreen {
     }
 
     private static List<String> readEditedAssigneeList(final List<String> defaultAssigneeList) {
-        final Scanner scanner = new Scanner(System.in);
         System.out.println
-                ("Enter separated by space new list the names of registered users in the list of assignee" +
-                        System.lineSeparator() + ", or skip the step: ");
-        List<String> assigneeList = defaultAssigneeList;
-        if (!scanner.nextLine().isBlank()) {
-            List<User> users = userService.getAllUsers();
-            DisplayUtils.displayUsernames(users);
-            List<String> assigneesUsernames = Arrays.asList(scanner.nextLine().split(" "));
+                ("Enter separated by space new list the names of registered users in the list of assignee or skip the step: ");
+        List<User> users = userService.getAllUsers();
+        DisplayUtils.displayUsernames(users);
+        final Scanner scanner = new Scanner(System.in);
+        String editedAssignees = scanner.nextLine();
+        if (!editedAssignees.isBlank()) {
+            List<String> assigneesUsernames = Arrays.asList(editedAssignees.split(" "));
             try {
                 userService.checkIfUsersExist(assigneesUsernames);
             } catch (WrongUsernameException e) {
@@ -170,7 +171,7 @@ public class TicketOperationsScreen {
             );
             return assigneesIds;
         }
-        return assigneeList;
+        return defaultAssigneeList;
     }
 
     private static Status readStatus(String message) {
@@ -187,19 +188,18 @@ public class TicketOperationsScreen {
     }
 
     private static Status readEditedStatus(final Status defaultStatus) {
+        System.out.println("Enter the status of your ticket: " + Arrays.asList(Status.values()) + ", or skip the step:");
         final Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the status of your ticket: " + Arrays.asList(Status.values()) +
-                ", or skip the step:");
-        Status status = defaultStatus;
-        if (!scanner.nextLine().isBlank()) {
-            String statusString = scanner.nextLine().toUpperCase();
+        String editedStatus = scanner.nextLine();
+        if (!editedStatus.isBlank()) {
+            String statusString = editedStatus.trim().toUpperCase();
             try {
                 return Status.valueOf(statusString);
             } catch (IllegalStateException exception) {
                 readStatus("Unexpected value: " + statusString);
             }
         }
-        return status;
+        return defaultStatus;
     }
 
     private static Priority readPriority(String message) {
@@ -216,19 +216,19 @@ public class TicketOperationsScreen {
     }
 
     private static Priority readEditedPriority(final Priority defaultPriority) {
-        final Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the priority of your ticket: "
                 + Arrays.asList(Priority.values()) + ", or skip the step:");
-        Priority priority = defaultPriority;
-        if (!scanner.nextLine().isBlank()) {
-            String priorityString = scanner.nextLine().toUpperCase();
+        final Scanner scanner = new Scanner(System.in);
+        String editedPriority = scanner.nextLine();
+        if (!editedPriority.isBlank()) {
+            String priorityString = editedPriority.trim().toUpperCase();
             try {
                 return Priority.valueOf(priorityString);
             } catch (IllegalStateException exception) {
                 readPriority("Unexpected value: " + priorityString);
             }
         }
-        return priority;
+        return defaultPriority;
     }
 
     private static long readEstimatedTime(String message) {

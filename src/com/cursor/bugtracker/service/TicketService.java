@@ -4,6 +4,7 @@ import com.cursor.bugtracker.dao.TicketDao;
 import com.cursor.bugtracker.dao.TicketInMemoryDao;
 import com.cursor.bugtracker.dao.UserDao;
 import com.cursor.bugtracker.dao.UserInMemoryDao;
+import com.cursor.bugtracker.dto.TicketDto;
 import com.cursor.bugtracker.enums.Priority;
 import com.cursor.bugtracker.enums.Status;
 import com.cursor.bugtracker.exceptions.*;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -146,11 +148,14 @@ public class TicketService implements Singleton {
      * 1. priority and
      * 2. status
      */
-    public List<Ticket> getAllTickets() {
+    public List<TicketDto> getAllTickets() {
         return ticketDao.getAllTickets().stream()
-                .sorted(Comparator.comparing(Ticket::getPriority))
-                .sorted(Comparator.comparing(Ticket::getStatus))
-                .collect(Collectors.toList());
+                .map(ticket -> new TicketDto(
+                                ticket,
+                                userDao.getUsernamesByIds(ticket.getAssigneeList()),
+                                userDao.getUserById(ticket.getReporter()).getName()
+                        )
+                ).collect(Collectors.toList());
     }
 
     public void delete(final String ticketId) throws TicketNotFoundException {
@@ -188,9 +193,9 @@ public class TicketService implements Singleton {
 
         if (status != null) {
             ticket.setStatus(status);
-            if(status.equals(Status.IN_PROGRESS)){
+            if (status.equals(Status.IN_PROGRESS)) {
                 ticket.setStartDate(LocalDateTime.now());
-            } else if(status.equals(Status.DONE)){
+            } else if (status.equals(Status.DONE)) {
                 ticket.setSpentTime(calculateSpentTime(ticket));
             }
         }
@@ -202,10 +207,10 @@ public class TicketService implements Singleton {
         return ticket;
     }
 
-    public long calculateSpentTime(Ticket ticket){
+    public long calculateSpentTime(Ticket ticket) {
         long startDate = ticket.getStartDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         long currentDate = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-        return (startDate-currentDate)/60_000 + 1;
+        return (startDate - currentDate) / 60_000 + 1;
     }
 }

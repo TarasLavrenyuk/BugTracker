@@ -16,7 +16,7 @@ public class UserInMemoryDao implements UserDao, Singleton {
         return instance;
     }
 
-    private Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
 
     private UserInMemoryDao() {
         String id1 = "5a817bdd-8294-4b05-a8f6-dc0e631563e5";
@@ -25,7 +25,7 @@ public class UserInMemoryDao implements UserDao, Singleton {
         String id2 = "7c2a397b-3634-426f-bf57-4a9bda5d6ede";
         User user2 = new User(id2, "john", "password");
 
-        String id3 = "4d87fd3a-ae9c-4834-a166-c745a8c92cda ";
+        String id3 = "4d87fd3a-ae9c-4834-a166-c745a8c92cda";
         User user3 = new User(id3, "jake", "password");
 
         String id4 = "9e7c6150-54f4-4f9e-a706-1412d65eb03a";
@@ -79,5 +79,14 @@ public class UserInMemoryDao implements UserDao, Singleton {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<String> getUsernamesByIds(List<String> userIds) {
+        List<String> result = new ArrayList<>();
+        for (String userId : userIds) {
+            result.add(users.get(userId).getName());
+        }
+        return result;
     }
 }
